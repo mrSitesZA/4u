@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4u</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary: #48525e;
+            --secondary: #6b818c;
+            --accent: #9db5b2;
+            --light: #f0f4f8;
+            --dark: #1c2541;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .hidden {
+            opacity: 0;
+            filter: blur(5px);
+            transform: translateY(50px);
+            transition: all 1s;
+        }
+        
+        .show {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo svg {
+            margin-right: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/land.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-button {
+            padding: 1rem 2rem;
+            background-color: var(--accent);
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            background-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .service-image {
+            height: 200px;
+            width: 100%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .service-content {
+            padding: 1.5rem;
+        }
+        
+        .service-content h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .service-content p {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .testimonials {
+            background-color: var(--primary);
+            color: white;
+            padding: 5rem 2rem;
+        }
+        
+        .testimonials .section-title {
+            color: white;
+        }
+        
+        .testimonial-slider {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .testimonial {
+            padding: 2rem;
+        }
+        
+        .testimonial p {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            transform: translateY(-50px);
+            transition: all 0.3s;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+        
+        /* Mobile navigation */
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: var(--primary);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: all 0.3s;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 L6 18"></path>
+                    <path d="M6 6 L18 18"></path>
+                </svg>
+                4u
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" class="open-modal">Emergency</a></li>
+            </ul>
+            <button class="menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <h1>Compassionate Funeral Services</h1>
+        <p>Guiding you through difficult times with dignity, respect, and personalized care.</p>
+        <a href="#contact" class="cta-button">Contact Us 24/7</a>
+    </section>
+
+    <section id="services">
+        <h2 class="section-title hidden">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card hidden">
+                <div class="service-image">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                        <line x1="6" y1="1" x2="6" y2="4"></line>
+                        <line x1="10" y1="1" x2="10" y2="4"></line>
+                        <line x1="14" y1="1" x2="14" y2="4"></line>
+                    </svg>
+                </div>
+                <div class="service-content">
+                    <h3>Funeral Planning</h3>
+                    <p>Comprehensive funeral planning services tailored to honor your loved one's memory. We handle all aspects of the funeral process with care and attention to detail.</p>
+                    <a href="#" class="cta-button">Learn More</a>
+                </div>
+            </div>
+            <div class="service-card hidden">
+                <div class="service-image">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="service-content">
+                    <h3>Memorial Services</h3>
+                    <p>Create a meaningful memorial service that celebrates life and provides comfort to family and friends. Our team will help design a personalized ceremony.</p>
+                    <a href="#" class="cta-button">Learn More</a>
+                </div>
+            </div>
+            <div class="service-card hidden">
+                <div class="service-image">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                </div>
+                <div class="service-content">
+                    <h3>Pre-Planning</h3>
+                    <p>Prepare for the future with our pre-planning services. Ease the burden on your loved ones by making arrangements in advance and ensuring your wishes are honored.</p>
+                    <a href="#" class="cta-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="hidden">
+        <h2 class="section-title">About Us</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center;">
+            <div style="flex: 1; min-width: 300px;">
+                <img src="/api/placeholder/600/400" alt="Our team" style="width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Dedicated to Serving Families Since 1985</h3>
+                <p style="line-height: 1.6; margin-bottom: 1rem;">
+                    At 4u Memorial Services, we understand that losing a loved one is one of life's most difficult experiences. Our compassionate team is committed to providing dignified, respectful funeral services that honor the memory of your loved one.
+                </p>
+                <p style="line-height: 1.6; margin-bottom: 1rem;">
+                    We believe in creating meaningful ceremonies that celebrate life, provide comfort to family and friends, and help begin the healing process. Our experienced professionals guide you through every step with care and attention to detail.
+                </p>
+                <a href="#" class="cta-button">Our Story</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <h2 class="section-title">What Families Say</h2>
+        <div class="testimonial-slider">
+            <div class="testimonial">
+                <p>"During our time of grief, 4u Memorial Services provided exceptional support and guidance. Their compassionate team helped us create a beautiful tribute to my father that truly honored his life."</p>
+                <div class="testimonial-author">- Sarah Johnson</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="hidden">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-form">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="service">Service Type</label>
+                    <select id="service" name="service">
+                        <option value="">Select a service</option>
+                        <option value="funeral">Funeral Service</option>
+                        <option value="memorial">Memorial Service</option>
+                        <option value="preplanning">Pre-planning</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Contact Information</h3>
+                <p>300 Witch Hazel</p>
+                <p>Gauteng, South Africa</p>
+                <p>Phone: (076) 386-3899</p>
+                <p>Email: bataudev.me</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#services">Our Services</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#">Obituaries</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <p>Follow us on social media for updates and information.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Serenity Memorial Services. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="modal" id="emergencyModal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem;">24/7 Emergency Services</h2>
+            <p style="margin-bottom: 1.5rem;">We understand that emergencies can happen at any time. Our team is available 24/7 to assist you in your time of need.</p>
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">Emergency Contact</h3>
+            <p style="margin-bottom: 0.5rem;"><strong>Phone:</strong> (021) 123-4567</p>
+            <p style="margin-bottom: 1.5rem;"><strong>Alternative:</strong> (021) 765-4321</p>
+            <a href="tel:0211234567" class="cta-button">Call Now</a>
+        </div>
+    </div>
+
+    <script>
+        // Mobile navigation toggle
+        document.querySelector('.menu-btn').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+        
+        // Modal functionality
+        const modal = document.getElementById('emergencyModal');
+        const openModalBtn = document.querySelector('.open-modal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        
+        openModalBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.add('active');
+        });
+        
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+        
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Here you would normally send the form data to your server
+            // For demo purposes, we'll just show an alert
+            alert('Your message has been sent. We will contact you shortly.');
+            
+            // Log the form submission event for analytics
+            if (typeof firebase !== 'undefined') {
+                firebase.analytics().logEvent('form_submission', {
+                    form_name: 'contact',
+                    form_service: document.getElementById('service').value
+                });
+            }
+            
+            e.target.reset();
+        });
+        
+        // Scroll animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        });
+        
+        const hiddenElements = document.querySelectorAll('.hidden');
+        hiddenElements.forEach((el) => observer.observe(el));
+        
+        // Initialize GSAP animations
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Hero animation
+            gsap.from('.hero h1', { 
+                opacity: 0, 
+                y: 50, 
+                duration: 1, 
+                delay: 0.5 
+            });
+            
+            gsap.from('.hero p', { 
+                opacity: 0, 
+                y: 30, 
+                duration: 1, 
+                delay: 0.8 
+            });
+            
+            gsap.from('.hero .cta-button', { 
+                opacity: 0, 
+                y: 30, 
+                duration: 1, 
+                delay: 1.1 
+            });
+            
+            // Service cards staggered animation
+            gsap.from('.service-card', {
+                scrollTrigger: {
+                    trigger: '.services-grid',
+                    start: 'top 80%',
+                },
+                opacity: 0,
+                y: 100,
+                stagger: 0.3,
+                duration: 1
+            });
+            
+            // Add click event tracking for analytics
+            document.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (typeof firebase !== 'undefined') {
+                        firebase.analytics().logEvent('link_click', {
+                            link_text: link.textContent,
+                            link_url: link.getAttribute('href')
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
